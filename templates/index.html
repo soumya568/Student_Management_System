@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+
+
+
+    <style>
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.stat-card {
+    background: #243b55;
+    color: white;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.stat-card h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.stat-card h2 {
+    color: white;
+    font-size: 32px;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+        }
+
+        header {
+            background: #243b55;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .dashboard {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ddd;
+        }
+
+        h2 {
+            color: #243b55;
+        }
+
+        button {
+            background: #243b55;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+<div style="text-align: right; padding: 15px;">
+    {% if admin_logged_in %}
+        <span>Admin Logged In</span>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+        <a href="{{ url_for('login') }}">Admin Login</a>
+    {% endif %}
+</div>
+
+    <header>
+        <h1>Student Management System</h1>
+        <p>Manage Your Student Records</p>
+    </header>
+
+    <div class="container">
+        <div class="dashboard">
+
+            <h2>Welcome to Dashboard</h2>
+
+            <p>Manage student information easily.</p>
+
+<div class="stats-container">
+
+    <div class="stat-card">
+        <h3>Total Students</h3>
+        <h2>{{ total_students }}</h2>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Courses</h3>
+        <h2>{{ total_courses }}</h2>
+    </div>
+
+    <div class="stat-card">
+        <h3>Third Year</h3>
+        <h2>{{ year_stats.get(3, 0) }}</h2>
+    </div>
+
+    <div class="stat-card">
+        <h3>Fourth Year</h3>
+        <h2>{{ year_stats.get(4, 0) }}</h2>
+    </div>
+
+</div>
+
+
+            <a href="{{ url_for('add_student') }}">
+    <button>Add New Student</button>
+</a>
+<a href="{{ url_for('view_students') }}">
+    <button>View All Students</button>
+</a>
+
+        </div>
+    </div>
+
+</body>
+</html>
