@@ -1,5 +1,5 @@
 
-import sqlite3
+import psycopg
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from database import get_connection, create_table
@@ -91,14 +91,14 @@ def add_student():
             conn.execute(
                 """INSERT INTO students
                 (name, email, course, year)
-                VALUES (?, ?, ?, ?)""",
+                VALUES (%s, %s, %s, %s)""",
                 (name, email, course, year)
             )
 
             conn.commit()
             flash("Student registered successfully!")
 
-        except sqlite3.IntegrityError:
+        except psycopg.IntegrityError:
             flash("This email is already registered!")
 
         finally:
@@ -119,11 +119,11 @@ def view_students():
     if search:
         students = conn.execute(
             """SELECT * FROM students
-            WHERE CAST(id AS TEXT) LIKE ?
-            OR name LIKE ?
-            OR email LIKE ?
-            OR course LIKE ?
-            OR CAST(year AS TEXT) LIKE ?
+            WHERE CAST(id AS TEXT) LIKE %s
+            OR name LIKE %s
+            OR email LIKE %s
+            OR course LIKE %s
+            OR CAST(year AS TEXT) LIKE %s
             ORDER BY id""",
             (
                 f"%{search}%",
@@ -163,15 +163,15 @@ def edit_student(student_id):
         try:
             conn.execute(
                 """UPDATE students
-                SET name = ?, email = ?, course = ?, year = ?
-                WHERE id = ?""",
+                SET name = %s, email = %s, course = %s, year = %s
+                WHERE id = %s""",
                 (name, email, course, year, student_id)
             )
 
             conn.commit()
             flash("Student details updated successfully!")
 
-        except sqlite3.IntegrityError:
+        except psycopg.IntegrityError:
             flash("This email is already registered!")
 
         finally:
@@ -180,7 +180,7 @@ def edit_student(student_id):
         return redirect(url_for("view_students"))
 
     student = conn.execute(
-        "SELECT * FROM students WHERE id = ?",
+        "SELECT * FROM students WHERE id = %s",
         (student_id,)
     ).fetchone()
 
@@ -202,7 +202,7 @@ def delete_student(student_id):
     conn = get_connection()
 
     conn.execute(
-        "DELETE FROM students WHERE id = ?",
+        "DELETE FROM students WHERE id = %s",
         (student_id,)
     )
 

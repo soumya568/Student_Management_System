@@ -1,15 +1,16 @@
 
-import sqlite3
+import os
+import psycopg
 
 def get_connection():
-    return sqlite3.connect("students.db")
+    return psycopg.connect(os.environ["DATABASE_URL"])
 
 def create_table():
     conn = get_connection()
 
     conn.execute("""
         CREATE TABLE IF NOT EXISTS students (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             name TEXT NOT NULL,
             email TEXT NOT NULL UNIQUE,
             course TEXT NOT NULL,
